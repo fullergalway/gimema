@@ -1,0 +1,7 @@
+
+Link for delete:
+https://members.gymnasticsireland.com//members/members.cfm?searchString=REN129998&sbmt=Search
+
+Fetch the members:
+const response = await fetch('https://members.gymnasticsireland.com//members/downloads/act_member_download.cfm');
+var text = await response.text();
