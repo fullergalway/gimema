@@ -118,18 +118,37 @@
       });
       all_members = all_members.concat(members);
       map_members();
+    }
+    var addDPMembers = function(members,source){
+      var source_number = add_source(source);
+      members = members.filter(m=>m['First name'] && m['Last Name'] && m['DOB']);
+      members.forEach(member => {
+        member.source = source_number;
+        member.SURNAME = member['Last Name'].trim();
+        member.FORENAME = member['First name'].trim();
+        member.fullname = `${member.FORENAME} ${member.SURNAME}`;
+        member.dob = dayjs(member.DOB.trim(),"DD/MM/YYYY").format("YYYY-MM-DD");
+        addKeys(member);
 
+      });
+      all_members = all_members.concat(members);
+      map_members();
     }
     var uploadCSV = function(){
       unwarn();
       var fileUpload = document.getElementById('fileUpload');
       var filename = fileUpload.value.split(/[\\\/]/).reverse()[0];
       Papa.parse(fileUpload.files[0], {
+        skipEmptyLines: true,
         header: true,
         complete: function(results) {
           if(results.data && results.data.length){
             if(results.data[0].Student && results.data[0].Birthday){
               addIClassMembers(results.data,filename);
+            }else if(results.data[0]['First name']
+                && results.data[0]['Last Name']
+                && results.data[0]['DOB']){
+                addDPMembers(results.data,filename);
             }else{
               warn("The format of the upload was not recognised. To add support for this type of file, send the top three lines of the file to Rob Fuller, <b>But first change any personal details</b>.");
             }
