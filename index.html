@@ -46,8 +46,10 @@
       </div>
     </div>
     <table class="table">
-      <thead><tr><th></th><th>Active Member Sources</th></tr></thead>
-      <tbody id="sources"></tbody>
+      <thead><tr><th></th><th>Active Member Sources</th><th></th></tr></thead>
+      <tbody id="sources">
+        <tr><td>gi</td><td>Gymnastics Ireland</td><td id="gicount"></td></tr>
+      </tbody>
     </table>
     <div>
     <div class="file">
@@ -90,21 +92,24 @@
         member.dob_key = `${member.dob}|${member.SURNAME}|${member.FORENAME}`
             .normalize("NFD").replace(/[\u0300-\u036f\ \']/g, "").toLowerCase();
     }
-    var add_source = function(source){
+    var add_source = function(source,count){
       var sources = document.getElementById('sources');
-      var source_number = sources.getElementsByTagName('tr').length + 1;
+      var source_number = sources.getElementsByTagName('tr').length;
       var tr = document.createElement('tr');
       var td = document.createElement('td');
       td.innerText = source_number;
       tr.appendChild(td);
-      var td = document.createElement('td');
+      td = document.createElement('td');
       td.innerText = source;
+      tr.appendChild(td);
+      td = document.createElement('td');
+      td.innerText = "("+count+")";
       tr.appendChild(td);
       sources.appendChild(tr);
       return source_number;
     }
     var addIClassMembers = function(members,source){
-      var source_number = add_source(source);
+      var source_number = add_source(source,members.length);
       members = members.filter(m=>m.Student && m.Birthday);
       members.forEach(member => {
         member.source = source_number;
@@ -120,7 +125,7 @@
       map_members();
     }
     var addDPMembers = function(members,source){
-      var source_number = add_source(source);
+      var source_number = add_source(source,members.length);
       members = members.filter(m=>m['First name'] && m['Last Name'] && m['DOB']);
       members.forEach(member => {
         member.source = source_number;
@@ -350,6 +355,7 @@
         member.source = "gi";
         addKeys(member);
       });
+      document.getElementById("gicount").innerText = "("+members.length+")";
       all_members = all_members.filter((member)=>!member.MEMBERSHIP_NUMBER);
       all_members = all_members.concat(members);
       map_members();
