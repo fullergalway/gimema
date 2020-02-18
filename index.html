@@ -201,7 +201,11 @@
           }
           );
         var text = await response.text();
-        if(!(""+text).startsWith("ADDRESS")){
+        // grr format changed
+        var lines = (""+text).split("\n");
+        lines[0] = lines[0].toUpperCase();
+        text = lines.join("\n");
+        if((lines[0]).indexOf("IGL_MEMBERSHIP_LEVEL")<0){
           login_fail();
         }else{
           const result = Papa.parse(text,{
